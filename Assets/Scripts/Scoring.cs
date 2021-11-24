@@ -6,10 +6,12 @@ using TMPro;
 public class Scoring : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI scoreDisplay;
+    [SerializeField] TextMeshProUGUI levelDisplay;
     [SerializeField] int scoreIncrement = 10;
     private int score = 0;
     private int comboCount = 0;
     private int maxCombo = 0;
+    private int level;
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +22,12 @@ public class Scoring : MonoBehaviour
     private void OnEnable() {
         EventManager.onSquareCleared += SetScore;
         EventManager.onDropSpent += DropSpent;
+        EventManager.onNewLevel += SetNewLevel;
+    }
+
+    private void SetNewLevel() {
+        level++;
+        UpdateLevelDisplay();
     }
 
     private void SetScore() {
@@ -58,4 +66,19 @@ public class Scoring : MonoBehaviour
         scoreDisplay.text = "Score: " + score.ToString() + "\nCombo: " + comboCount.ToString();
     }
 
+    private void UpdateLevelDisplay() {
+        levelDisplay.text = "Level: " + level.ToString();
+    }
+
+    public int GetCurrentScore() {
+        return score;
+    }
+
+    public int GetCurrentLevel() {
+        return level;
+    }
+
+    public int GetMaxCombo() {
+        return maxCombo;
+    }
 }

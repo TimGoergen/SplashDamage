@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject highlightPanel;
     [SerializeField] GameObject borderLinePrefab;
     [SerializeField] GameObject scoreBubblePrefab;
+    [SerializeField] LevelComplete levelCompleteScreen;
+    [SerializeField] GameOver gameOverScreen;
     public Blob blobPrefab;
 
     GameBoard gameBoard;
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviour
     private int activeFlyingDropCount = 0;
     private int activeBlobCount = 0;
     private Vector3 defaultNewBucketDropLocation = new Vector3(68f,45f,0);
+    private int gridSquareSize = 12;
 
 
     private void OnEnable() {
@@ -46,11 +49,20 @@ public class GameManager : MonoBehaviour
                 + ", Flying Drops Count: " + activeFlyingDropCount.ToString() 
                 + ", Blobs Remaining: " + activeBlobCount.ToString());
         if (activeFlyingDropCount == 0 && dropsInBucket == 0) {
-            Debug.Log("YOU RAN OUT OF DROPS");
+            this.gameObject.layer = 2;
+            gameOverScreen.DisplayGameOverScreen();
         }
         else if (activeFlyingDropCount == 0 && activeBlobCount == 0) {
-            Debug.Log("YOU WIN!");
+            this.gameObject.layer = 2;
+            levelCompleteScreen.DisplayLevelCompleteScreen();
         }
+    }
+
+    public void LoadNewLevel() {
+        this.gameObject.layer = 0;
+        EventManager.RaiseOnNewLevel();
+        LoadGameBoard(gameBoardSize);
+        AddDropToBucket();
     }
 
     private void DecrementActiveFlyingDropCount() {
@@ -74,9 +86,18 @@ public class GameManager : MonoBehaviour
     }
     
     // Start is called before the first frame update
-    void Start() {
-        int gridSquareSize = 12;
-        float gridWidth = (gridSquareSize * gameBoardSize / 2);
+    void Start()
+    {
+        EventManager.RaiseOnNewLevel();
+        LoadGameBoard(gameBoardSize);
+
+        dropsInBucket = startingDrops;
+        FillDropBucket(startingDrops);
+    }
+
+    private void LoadGameBoard(int boardSize)
+    {
+        float gridWidth = (gridSquareSize * boardSize / 2);
 
         Vector3 topLeft = new Vector3(-gridWidth, gridWidth);
         Vector3 bottomRight = new Vector3(gridWidth, -gridWidth);
@@ -84,12 +105,9 @@ public class GameManager : MonoBehaviour
 
         float boardHeight = gameBoard.GetSquareHeight();
         float boardWidth = gameBoard.GetSquareWidth();
-        
+
         Vector3 panelSize = new Vector3(boardWidth, boardHeight, 1);
         highlightPanel.transform.localScale = panelSize;
-
-        dropsInBucket = startingDrops;
-        FillDropBucket(startingDrops);
     }
 
     private void AddDropToBucket() {

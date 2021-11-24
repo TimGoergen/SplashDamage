@@ -33,6 +33,9 @@ public class EventManager : MonoBehaviour
     public delegate void OnComboEarnsBucketDrop();
     public static event OnComboEarnsBucketDrop onComboEarnsBucketDrop;
 
+    public delegate void OnNewLevel();
+    public static event OnNewLevel onNewLevel;
+
     public static void RaiseOnSquareCleared() {
         if (onSquareCleared != null) {
             onSquareCleared();
@@ -72,6 +75,12 @@ public class EventManager : MonoBehaviour
     public static void RaiseOnComboEarnsBucketDrop() {
         if (onComboEarnsBucketDrop != null) {
             onComboEarnsBucketDrop();
+        }
+    }
+    
+    public static void RaiseOnNewLevel() {
+        if (onNewLevel != null) {
+            onNewLevel();
         }
     }
     
