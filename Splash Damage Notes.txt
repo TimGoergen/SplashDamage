@@ -1,0 +1,36 @@
+
+https://www.mostfungames.com/splash-back.htm
+
+You start with 10 drops
+
+Use them to grow blobs until they burst
+
+Create combos to earn more drops
+
+Grid - 6x6
+Drop Count Display
+Level # Display
+
+Level 1 - 6 squares empty, rest have between 1 and 4 drops
+
+When square with 4 drops gets one more drop, it explodes and sends drops in all 4 directions (up / down / left / right)
+
+If enough (squares are cleared / blobs pop) then you earn more drops.  How many?
+
+When you hover over a blob, it jiggles
+When a drop hits a blob it first changes shape based on new drop count then jiggles
+When a blob explodes, there is a small splash animation
+
+How many drops in each square at start of each level?  Does the average number of drops in each square go down as levels get higher?
+
+
+PLAYER EXPERIENCE:
+	Solving Puzzles?
+	
+CORE MECHANIC:
+	Clicking to add drops to blob
+	
+GAME LOOP:
+	Add drops to explode blobs and clear board
+
+
