@@ -6,6 +6,8 @@ using TMPro;
 public class GameOver : MonoBehaviour
 {
     [SerializeField] Scoring scoreBoard;
+    [SerializeField] GameManager gameManager;
+
     [SerializeField] TextMeshProUGUI congratsText;
     [SerializeField] TextMeshProUGUI scoreValuesText;
 
@@ -18,6 +20,11 @@ public class GameOver : MonoBehaviour
 
     public void OnQuitButtonClick() {
         Application.Quit();
+    }
+
+    public void OnPlayAgainButtonClick() {
+        gameManager.StartGame();
+        this.gameObject.SetActive(false);
     }
 
 }

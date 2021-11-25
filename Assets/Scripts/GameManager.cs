@@ -6,8 +6,6 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     [Header("Game")]
-    [Range(2,8)]
-    [SerializeField] int gameBoardSize;
     [Range(2,20)]
     [SerializeField] int startingDrops = 10;
 
@@ -18,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject scoreBubblePrefab;
     [SerializeField] LevelComplete levelCompleteScreen;
     [SerializeField] GameOver gameOverScreen;
+    [SerializeField] Scoring scoreBoard;
     public Blob blobPrefab;
 
     GameBoard gameBoard;
@@ -32,6 +31,7 @@ public class GameManager : MonoBehaviour
     private int activeBlobCount = 0;
     private Vector3 defaultNewBucketDropLocation = new Vector3(68f,45f,0);
     private int gridSquareSize = 12;
+    private System.Random rand = new System.Random();
 
 
     private void OnEnable() {
@@ -45,14 +45,17 @@ public class GameManager : MonoBehaviour
     }
 
     private void CheckGridCleared() {
-        Debug.Log("Drops In Bucket: " + dropsInBucket.ToString() 
-                + ", Flying Drops Count: " + activeFlyingDropCount.ToString() 
-                + ", Blobs Remaining: " + activeBlobCount.ToString());
-        if (activeFlyingDropCount == 0 && dropsInBucket == 0) {
+        if (activeFlyingDropCount == 0 && dropsInBucket == 0 && activeBlobCount > 0) {
+            Debug.Log("Drops In Bucket: " + dropsInBucket.ToString() 
+                    + ", Flying Drops Count: " + activeFlyingDropCount.ToString() 
+                    + ", Blobs Remaining: " + activeBlobCount.ToString());
             this.gameObject.layer = 2;
             gameOverScreen.DisplayGameOverScreen();
         }
         else if (activeFlyingDropCount == 0 && activeBlobCount == 0) {
+            Debug.Log("Drops In Bucket: " + dropsInBucket.ToString() 
+                    + ", Flying Drops Count: " + activeFlyingDropCount.ToString() 
+                    + ", Blobs Remaining: " + activeBlobCount.ToString());
             this.gameObject.layer = 2;
             levelCompleteScreen.DisplayLevelCompleteScreen();
         }
@@ -61,7 +64,10 @@ public class GameManager : MonoBehaviour
     public void LoadNewLevel() {
         this.gameObject.layer = 0;
         EventManager.RaiseOnNewLevel();
-        LoadGameBoard(gameBoardSize);
+        int currentLevel = scoreBoard.GetCurrentLevel();
+        int boardSize = GetGameBoardSize(currentLevel);
+        ClearGameBoard();
+        LoadGameBoard(boardSize);
         AddDropToBucket();
     }
 
@@ -86,11 +92,55 @@ public class GameManager : MonoBehaviour
     }
     
     // Start is called before the first frame update
-    void Start()
+    public void StartGame()
     {
-        EventManager.RaiseOnNewLevel();
-        LoadGameBoard(gameBoardSize);
+        this.gameObject.layer = 0;
+        ClearGameBoard();
 
+        scoreBoard.Initialize();
+        EventManager.RaiseOnNewLevel();
+        int currentLevel = scoreBoard.GetCurrentLevel();
+        int boardSize = GetGameBoardSize(currentLevel);
+
+        LoadGameBoard(boardSize);
+        InitializeDropBucket();
+    }
+
+    private void ClearGameBoard()
+    {
+        if (gameBoard != null) {
+            gameBoard.ClearExistingScreenObjects();
+        }
+    }
+
+    private int GetGameBoardSize(int currentLevel)
+    {
+        int size = 0;
+        if (currentLevel <= 3) {
+            size = currentLevel + 3;
+        }
+        else {
+            int randInt = rand.Next(1,100);
+            if (randInt <= 5) {
+                size = 3;
+            }
+            else if (randInt < 15) {
+                size = 4;
+            }
+            else if (randInt < 35) {
+                size = 5;
+            }
+            else if (randInt < 55) {
+                size = 7;
+            }
+            else {
+                size = 6;
+            }
+        }
+        return size;
+    }
+
+    private void InitializeDropBucket() {
         dropsInBucket = startingDrops;
         FillDropBucket(startingDrops);
     }
@@ -101,7 +151,7 @@ public class GameManager : MonoBehaviour
 
         Vector3 topLeft = new Vector3(-gridWidth, gridWidth);
         Vector3 bottomRight = new Vector3(gridWidth, -gridWidth);
-        gameBoard = new GameBoard(gameBoardSize, blobPrefab, borderLinePrefab, topLeft, bottomRight);
+        gameBoard = new GameBoard(boardSize, blobPrefab, borderLinePrefab, topLeft, bottomRight);
 
         float boardHeight = gameBoard.GetSquareHeight();
         float boardWidth = gameBoard.GetSquareWidth();

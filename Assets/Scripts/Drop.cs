@@ -14,12 +14,6 @@ public class Drop : MonoBehaviour
 
     private DropDirection.Direction direction;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        EventManager.RaiseOnDropCreated();
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -67,6 +61,8 @@ public class Drop : MonoBehaviour
 
         float zRotation = DropDirection.GetZRotationByDirection(direction);
         drop.transform.rotation = Quaternion.Euler(0, 0, zRotation);
+
+        EventManager.RaiseOnDropCreated();
     }
 
     void OnBecameInvisible() {

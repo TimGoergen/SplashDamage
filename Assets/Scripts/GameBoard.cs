@@ -41,6 +41,7 @@ public class GameBoard
     int borderCornerVertices = 20;
     private GameObject borderLinePrefab;
     private System.Random randDrops;
+    private List<GameObject> borderLines;
 
 
 
@@ -50,6 +51,22 @@ public class GameBoard
 
     public float GetSquareWidth() {
         return gridSquareWidth;
+    }
+
+    public void ClearExistingScreenObjects() {
+        for (int row = 0; row<gridSize; row++) {
+            for (int col = 0; col<gridSize; col++) {
+                if (grid[row,col] != null) {
+                    UnityEngine.Object.Destroy(grid[row,col].gameObject);
+                }
+            }
+        }
+
+        for (int i=0; i<borderLines.Count; i++) {
+            if (borderLines[i].gameObject != null) {
+                UnityEngine.Object.Destroy(borderLines[i].gameObject);
+            }
+        }
     }
 
     public GameBoard(int size, Blob prefab, GameObject borderPrefab, Vector3 topLeft, Vector3 bottomRight) {
@@ -98,9 +115,9 @@ public class GameBoard
         int adjustedDropCount = 0;
 
         if (randomInt <= 20) { adjustedDropCount = 0; }
-        else if (randomInt <= 40) { adjustedDropCount = 1; }
-        else if (randomInt <= 60) { adjustedDropCount = 2; }
-        else if (randomInt <= 80) { adjustedDropCount = 3; }
+        else if (randomInt <= 35) { adjustedDropCount = 1; }
+        else if (randomInt <= 55) { adjustedDropCount = 2; }
+        else if (randomInt <= 75) { adjustedDropCount = 3; }
         else { adjustedDropCount = 4; }
 
         return adjustedDropCount;
@@ -171,12 +188,14 @@ public class GameBoard
         lr.numCornerVertices = borderCornerVertices;
         lr.positionCount = positionCount;
         lr.SetPositions(positions);
+        borderLines.Add(myLine);
      }
 
     private void DrawGridLines(int gridSize, Vector3 topLeft, Vector3 bottomRight)
     {
         // draw outside border
         Vector3[] positions = new Vector3[5];
+        borderLines = new List<GameObject>();
 
         positions[0] = topLeft;
         positions[1] = new Vector3(bottomRight.x, topLeft.y);

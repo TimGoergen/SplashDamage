@@ -19,6 +19,14 @@ public class Scoring : MonoBehaviour
         UpdateScoreDisplay();
     }
 
+    public void Initialize() {
+        score = 0;
+        comboCount = 0;
+        maxCombo = 0;
+        level = 0;
+        UpdateScoreDisplay();
+    }
+
     private void OnEnable() {
         EventManager.onSquareCleared += SetScore;
         EventManager.onDropSpent += DropSpent;
