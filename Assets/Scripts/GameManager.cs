@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameOver gameOverScreen;
     [SerializeField] Scoring scoreBoard;
     public Blob blobPrefab;
+    [SerializeField] TextMeshProUGUI dropCountDisplay;
 
     GameBoard gameBoard;
 
@@ -50,6 +51,7 @@ public class GameManager : MonoBehaviour
                     + ", Flying Drops Count: " + activeFlyingDropCount.ToString() 
                     + ", Blobs Remaining: " + activeBlobCount.ToString());
             this.gameObject.layer = 2;
+            EventManager.RaiseOnGameInactive();
             gameOverScreen.DisplayGameOverScreen();
         }
         else if (activeFlyingDropCount == 0 && activeBlobCount == 0) {
@@ -57,16 +59,18 @@ public class GameManager : MonoBehaviour
                     + ", Flying Drops Count: " + activeFlyingDropCount.ToString() 
                     + ", Blobs Remaining: " + activeBlobCount.ToString());
             this.gameObject.layer = 2;
+            EventManager.RaiseOnGameInactive();
             levelCompleteScreen.DisplayLevelCompleteScreen();
         }
     }
 
     public void LoadNewLevel() {
         this.gameObject.layer = 0;
+        ClearGameBoard();
+        EventManager.RaiseOnGameActive();
         EventManager.RaiseOnNewLevel();
         int currentLevel = scoreBoard.GetCurrentLevel();
         int boardSize = GetGameBoardSize(currentLevel);
-        ClearGameBoard();
         LoadGameBoard(boardSize);
         AddDropToBucket();
     }
@@ -97,13 +101,18 @@ public class GameManager : MonoBehaviour
         this.gameObject.layer = 0;
         ClearGameBoard();
 
-        scoreBoard.Initialize();
-        EventManager.RaiseOnNewLevel();
-        int currentLevel = scoreBoard.GetCurrentLevel();
-        int boardSize = GetGameBoardSize(currentLevel);
+        int boardSize = GetGameBoardSize(1);
 
         LoadGameBoard(boardSize);
         InitializeDropBucket();
+        EventManager.RaiseOnGameActive();
+        activeBlobCount = 0;
+        scoreBoard.Initialize();
+        UpdateDropCountDisplay();
+    }
+
+    private void UpdateDropCountDisplay() {
+        dropCountDisplay.text = "Drops: " + dropsInBucket.ToString();
     }
 
     private void ClearGameBoard()
@@ -117,7 +126,7 @@ public class GameManager : MonoBehaviour
     {
         int size = 0;
         if (currentLevel <= 3) {
-            size = currentLevel + 3;
+            size = currentLevel + 4;
         }
         else {
             int randInt = rand.Next(1,100);
@@ -141,6 +150,12 @@ public class GameManager : MonoBehaviour
     }
 
     private void InitializeDropBucket() {
+        if (dropBucket != null) {
+            for (int i=0; i<dropBucket.Count; i++) {
+                Destroy(dropBucket[i].gameObject);
+                dropBucket[i] = null;
+            }
+        }
         dropsInBucket = startingDrops;
         FillDropBucket(startingDrops);
     }
@@ -164,6 +179,7 @@ public class GameManager : MonoBehaviour
         dropsInBucket++;
         GameObject scoreBubble = CreateScoreBubble(defaultNewBucketDropLocation);
         dropBucket.Add(scoreBubble);
+        UpdateDropCountDisplay();
     }
 
     private void FillDropBucket(int startingDrops)
@@ -183,9 +199,11 @@ public class GameManager : MonoBehaviour
 
     private void UseDropFromBucket(int dropRemoved) {
         if (dropRemoved >= 0) {
-            Destroy(dropBucket[dropRemoved].gameObject);
-            dropBucket.RemoveAt(dropRemoved);
+            Destroy(dropBucket[dropRemoved-1].gameObject);
+            dropBucket.RemoveAt(dropRemoved-1);
+            dropsInBucket--;
             CheckGridCleared();
+            UpdateDropCountDisplay();
         }
         else {
             Debug.Log("You've got no drops left!");
@@ -220,7 +238,6 @@ public class GameManager : MonoBehaviour
 
             gameBoard.ClickGrid(gridIndex);
 
-            dropsInBucket--;
             UseDropFromBucket(dropsInBucket);
             EventManager.RaiseOnDropSpent();
         }

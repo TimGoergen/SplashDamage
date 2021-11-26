@@ -58,6 +58,7 @@ public class GameBoard
             for (int col = 0; col<gridSize; col++) {
                 if (grid[row,col] != null) {
                     UnityEngine.Object.Destroy(grid[row,col].gameObject);
+                    grid[row,col] = null;
                 }
             }
         }
@@ -65,6 +66,7 @@ public class GameBoard
         for (int i=0; i<borderLines.Count; i++) {
             if (borderLines[i].gameObject != null) {
                 UnityEngine.Object.Destroy(borderLines[i].gameObject);
+                borderLines[i] = null;
             }
         }
     }

@@ -36,6 +36,12 @@ public class EventManager : MonoBehaviour
     public delegate void OnNewLevel();
     public static event OnNewLevel onNewLevel;
 
+    public delegate void OnGameActive();
+    public static event OnGameActive onGameActive;
+
+    public delegate void OnGameInactive();
+    public static event OnGameInactive onGameInactive;
+
     public static void RaiseOnSquareCleared() {
         if (onSquareCleared != null) {
             onSquareCleared();
@@ -81,6 +87,18 @@ public class EventManager : MonoBehaviour
     public static void RaiseOnNewLevel() {
         if (onNewLevel != null) {
             onNewLevel();
+        }
+    }
+    
+    public static void RaiseOnGameActive() {
+        if (onGameActive != null) {
+            onGameActive();
+        }
+    }
+    
+    public static void RaiseOnGameInactive() {
+        if (onGameInactive != null) {
+            onGameInactive();
         }
     }
     

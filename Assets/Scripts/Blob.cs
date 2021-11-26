@@ -16,6 +16,7 @@ public class Blob : MonoBehaviour
     [SerializeField] Drop dropPrefab;
     SpriteRenderer spriteRenderer;
     private ParticleSystem splashEffect;
+    private bool isDestroyedByDrop = false;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +31,7 @@ public class Blob : MonoBehaviour
             AddDropToBlob();
             splashEffect.Play();
             Destroy(other.gameObject, 0);
+            other = null;
             jiggleBlob.Jiggle();
         }
     }
@@ -62,7 +64,9 @@ public class Blob : MonoBehaviour
             SetBlobSprite();
         }
         else {
+            isDestroyedByDrop = true;
             Destroy(blob.gameObject, 0);
+            blob = null;
             CreateDropsOnErupt();
         }
     }
@@ -100,8 +104,10 @@ public class Blob : MonoBehaviour
     }
 
     private void OnDestroy() {
-        EventManager.RaiseOnSquareCleared();
-        EventManager.RaiseOnBlobDestroyed();
+        if (isDestroyedByDrop) {
+            EventManager.RaiseOnSquareCleared();
+            EventManager.RaiseOnBlobDestroyed();
+        }
     }
 
 
