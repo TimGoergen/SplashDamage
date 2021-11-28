@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Scoring scoreBoard;
     public Blob blobPrefab;
     [SerializeField] TextMeshProUGUI dropCountDisplay;
+    [SerializeField] PulseGameObject dropCountDisplayUI;
 
     GameBoard gameBoard;
 
@@ -113,6 +114,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdateDropCountDisplay() {
         dropCountDisplay.text = "Drops: " + dropsInBucket.ToString();
+        dropCountDisplayUI.Pulse();
     }
 
     private void ClearGameBoard()
@@ -130,10 +132,7 @@ public class GameManager : MonoBehaviour
         }
         else {
             int randInt = rand.Next(1,100);
-            if (randInt <= 5) {
-                size = 3;
-            }
-            else if (randInt < 15) {
+            if (randInt < 15) {
                 size = 4;
             }
             else if (randInt < 35) {
