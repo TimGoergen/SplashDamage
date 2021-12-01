@@ -11,6 +11,7 @@ public class Drop : MonoBehaviour
 
     [Header("Assets")]
     [SerializeField] GameObject drop;
+    [SerializeField] AudioClip sfxWaterDrop;
 
     private DropDirection.Direction direction;
 
@@ -70,6 +71,8 @@ public class Drop : MonoBehaviour
     }
 
     private void OnDestroy() {
+        AudioManager audio = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+        audio.PlayAudio(sfxWaterDrop);
         EventManager.RaiseOnDropDestroyed();
     }
 }

@@ -121,6 +121,7 @@ MonoBehaviour:
   dropSpeed: 35
   newDropPositionOffset: 3
   drop: {fileID: 891505416350782684}
+  sfxWaterDrop: {fileID: 8300000, guid: 302ff8eebbdd3624c9040fdd698de298, type: 3}
 --- !u!70 &891505416350782686
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

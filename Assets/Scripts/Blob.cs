@@ -14,6 +14,7 @@ public class Blob : MonoBehaviour
     [SerializeField] Sprite spriteBubbleDropCount4;
     JiggleBlob jiggleBlob;
     [SerializeField] Drop dropPrefab;
+    [SerializeField] AudioClip sfxBubblePop;
     SpriteRenderer spriteRenderer;
     private ParticleSystem splashEffect;
     private bool isDestroyedByDrop = false;
@@ -36,25 +37,30 @@ public class Blob : MonoBehaviour
         }
     }
     private void SetBlobSprite() {
+        CircleCollider2D blobCollider = GetComponent<CircleCollider2D>();
 
         if (dropCount == 1) {
             spriteRenderer.sprite = spriteBubbleDropCount1;
+            blobCollider.radius = 2.2f;
         }
         else if (dropCount == 2) {
             spriteRenderer.sprite = spriteBubbleDropCount2;
+            blobCollider.radius = 2.8f;
         }
         else if (dropCount == 3) {
             spriteRenderer.sprite = spriteBubbleDropCount3;
+            blobCollider.radius = 3.3f;
         }
         else if (dropCount == 4) {
             spriteRenderer.sprite = spriteBubbleDropCount4;
+            blobCollider.radius = 4f;
         }
 
     }
 
     public void ClickBlob() {
-        AddDropToBlob();
         splashEffect.Play();
+        AddDropToBlob();
         jiggleBlob.Jiggle();
     }
 
@@ -105,6 +111,9 @@ public class Blob : MonoBehaviour
 
     private void OnDestroy() {
         if (isDestroyedByDrop) {
+            AudioManager audio = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+            audio.PlayAudio(sfxBubblePop);
+
             EventManager.RaiseOnSquareCleared();
             EventManager.RaiseOnBlobDestroyed();
         }

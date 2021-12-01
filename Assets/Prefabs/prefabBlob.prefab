@@ -154,11 +154,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropCount: 1
   blob: {fileID: 7232021185173561693}
-  spriteBubbleDropCount1: {fileID: 21300000, guid: fa9915eec39f0c04fa5ec7ac9f32c910, type: 3}
-  spriteBubbleDropCount2: {fileID: 21300000, guid: 2423c94cda0794048b5b8457a0e3001d, type: 3}
-  spriteBubbleDropCount3: {fileID: 21300000, guid: a3d86b9d2a3471b469f7f42d9b395dda, type: 3}
-  spriteBubbleDropCount4: {fileID: 21300000, guid: 67bbbb48e67df2245bb0df9cb46f696b, type: 3}
+  spriteBubbleDropCount1: {fileID: 21300000, guid: aaa05e53fb1d9bd48a6ee091a4feda2d, type: 3}
+  spriteBubbleDropCount2: {fileID: 21300000, guid: 68e30ed6868806e4ea154600874b67a3, type: 3}
+  spriteBubbleDropCount3: {fileID: 21300000, guid: 1c1ae45ee7b2ae6439c6aef0cab4278d, type: 3}
+  spriteBubbleDropCount4: {fileID: 21300000, guid: f3ee01c1268a39944896e72adfd9db56, type: 3}
   dropPrefab: {fileID: 891505416350782681, guid: 1a97ef2d422b25143ab3258034f0a5c4, type: 3}
+  sfxBubblePop: {fileID: 8300000, guid: b1aea986235c4794989d2721345b1e1b, type: 3}
 --- !u!114 &7232021185173561685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,7 +214,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7232021185173561693}
   serializedVersion: 7
-  lengthInSec: 0.2
+  lengthInSec: 0.05
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -221,7 +222,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -288,7 +289,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.5
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -457,7 +458,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2.5
+      scalar: 1.75
       minScalar: 0.6
       maxCurve:
         serializedVersion: 2
@@ -1038,7 +1039,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 100
       minScalar: 10
       maxCurve:
         serializedVersion: 2
