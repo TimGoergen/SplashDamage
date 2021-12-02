@@ -18,6 +18,7 @@ public class Blob : MonoBehaviour
     SpriteRenderer spriteRenderer;
     private ParticleSystem splashEffect;
     private bool isDestroyedByDrop = false;
+    private AudioManagerHighPriority blobPopAudio;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class Blob : MonoBehaviour
         jiggleBlob = GetComponent<JiggleBlob>();
         splashEffect = GetComponent<ParticleSystem>();
         EventManager.RaiseOnBlobCreated();
+        blobPopAudio = GameObject.Find("AudioManagerHighPriority").GetComponent<AudioManagerHighPriority>();
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
@@ -111,8 +113,7 @@ public class Blob : MonoBehaviour
 
     private void OnDestroy() {
         if (isDestroyedByDrop) {
-            AudioManager audio = GameObject.Find("AudioManager").GetComponent<AudioManager>();
-            audio.PlayAudio(sfxBubblePop);
+            blobPopAudio.PlayAudio(sfxBubblePop);
 
             EventManager.RaiseOnSquareCleared();
             EventManager.RaiseOnBlobDestroyed();

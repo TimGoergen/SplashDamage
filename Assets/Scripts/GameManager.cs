@@ -34,6 +34,10 @@ public class GameManager : MonoBehaviour
     private Vector3 defaultNewBucketDropLocation = new Vector3(68f,45f,0);
     private int gridSquareSize = 12;
     private System.Random rand = new System.Random();
+    [SerializeField] AudioClip sfxBonusDrop;
+
+    private AudioManagerHighPriority bonusDropAudio;
+
 
 
     private void OnEnable() {
@@ -110,6 +114,7 @@ public class GameManager : MonoBehaviour
         activeBlobCount = 0;
         scoreBoard.Initialize();
         UpdateDropCountDisplay();
+        bonusDropAudio = GameObject.Find("AudioManagerHighPriority").GetComponent<AudioManagerHighPriority>();
     }
 
     private void UpdateDropCountDisplay() {
@@ -176,6 +181,7 @@ public class GameManager : MonoBehaviour
 
     private void AddDropToBucket() {
         dropsInBucket++;
+        bonusDropAudio.PlayAudio(sfxBonusDrop);
         GameObject scoreBubble = CreateScoreBubble(defaultNewBucketDropLocation);
         dropBucket.Add(scoreBubble);
         UpdateDropCountDisplay();

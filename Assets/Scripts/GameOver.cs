@@ -11,9 +11,17 @@ public class GameOver : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI congratsText;
     [SerializeField] TextMeshProUGUI scoreValuesText;
+    [SerializeField] AudioClip sfxGameOver;
+    private AudioManagerHighPriority gameOverAudio;
+
+    private void Start() {
+        gameOverAudio = GameObject.Find("AudioManagerHighPriority").GetComponent<AudioManagerHighPriority>();
+
+    }
 
     public void DisplayGameOverScreen() {
         this.gameObject.SetActive(true);
+        gameOverAudio.PlayAudio(sfxGameOver);
         scoreValuesText.text = scoreBoard.GetCurrentScore().ToString() + "\n" + scoreBoard.GetMaxCombo().ToString();
         int level = scoreBoard.GetCurrentLevel();
         congratsText.text = "Game Over!\nYou reached Level " + level;

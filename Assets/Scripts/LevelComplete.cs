@@ -10,11 +10,15 @@ public class LevelComplete : MonoBehaviour
     [SerializeField] TextMeshProUGUI congratsText;
     [SerializeField] TextMeshProUGUI scoreValuesText;
     [SerializeField] AudioClip sfxLevelComplete;
+    private AudioManagerHighPriority levelCompleteAudio;
+
+    private void Start() {
+        levelCompleteAudio = GameObject.Find("AudioManagerHighPriority").GetComponent<AudioManagerHighPriority>();
+    }
 
     public void DisplayLevelCompleteScreen() {
         this.gameObject.SetActive(true);
-        AudioManager audio = GameObject.Find("AudioManager").GetComponent<AudioManager>();
-        audio.PlayAudio(sfxLevelComplete);
+        levelCompleteAudio.PlayAudio(sfxLevelComplete);
 
         scoreValuesText.text = scoreBoard.GetCurrentScore().ToString() + "\n" + scoreBoard.GetMaxCombo().ToString();
         int level = scoreBoard.GetCurrentLevel();

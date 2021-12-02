@@ -14,6 +14,8 @@ public class Drop : MonoBehaviour
     [SerializeField] AudioClip sfxWaterDrop;
 
     private DropDirection.Direction direction;
+    private AudioManagerLowPriority dropPopAudio;
+    private ParticleSystem splashEffect;
 
     // Update is called once per frame
     void Update()
@@ -64,15 +66,23 @@ public class Drop : MonoBehaviour
         drop.transform.rotation = Quaternion.Euler(0, 0, zRotation);
 
         EventManager.RaiseOnDropCreated();
+
+        dropPopAudio = GameObject.Find("AudioManagerLowPriority").GetComponent<AudioManagerLowPriority>();
+        splashEffect = GetComponent<ParticleSystem>();
     }
 
     void OnBecameInvisible() {
+        splashEffect.Play();
+        StartCoroutine(DestoryAfterDelay());
+    }
+
+    private IEnumerator DestoryAfterDelay() {
+        yield return new WaitForSeconds(0.2f);
         Destroy(gameObject);
     }
 
     private void OnDestroy() {
-        AudioManager audio = GameObject.Find("AudioManager").GetComponent<AudioManager>();
-        audio.PlayAudio(sfxWaterDrop);
+        dropPopAudio.PlayAudio(sfxWaterDrop);
         EventManager.RaiseOnDropDestroyed();
     }
 }
