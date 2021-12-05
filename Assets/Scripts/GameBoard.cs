@@ -42,7 +42,7 @@ public class GameBoard
     private GameObject borderLinePrefab;
     private System.Random randDrops;
     private List<GameObject> borderLines;
-
+    private GameManager.Difficulty gameDifficulty;
 
 
     public float GetSquareHeight() {
@@ -71,7 +71,8 @@ public class GameBoard
         }
     }
 
-    public GameBoard(int size, Blob prefab, GameObject borderPrefab, Vector3 topLeft, Vector3 bottomRight) {
+    public GameBoard(int size, Blob prefab, GameObject borderPrefab, Vector3 topLeft, Vector3 bottomRight, GameManager.Difficulty currentDifficulty) {
+        gameDifficulty = currentDifficulty;
         blobPrefab = prefab;
         borderLinePrefab = borderPrefab;
         int dropCount;
@@ -116,11 +117,27 @@ public class GameBoard
         int randomInt = randDrops.Next(1, 100);
         int adjustedDropCount = 0;
 
-        if (randomInt <= 20) { adjustedDropCount = 0; }
-        else if (randomInt <= 35) { adjustedDropCount = 1; }
-        else if (randomInt <= 55) { adjustedDropCount = 2; }
-        else if (randomInt <= 75) { adjustedDropCount = 3; }
-        else { adjustedDropCount = 4; }
+        if (gameDifficulty == GameManager.Difficulty.easy) {
+            if (randomInt <= 20) { adjustedDropCount = 0; }
+            else if (randomInt <= 30) { adjustedDropCount = 1; }
+            else if (randomInt <= 46) { adjustedDropCount = 2; }
+            else if (randomInt <= 68) { adjustedDropCount = 3; }
+            else { adjustedDropCount = 4; }
+        }
+        else if (gameDifficulty == GameManager.Difficulty.normal) {
+            if (randomInt <= 20) { adjustedDropCount = 0; }
+            else if (randomInt <= 35) { adjustedDropCount = 1; }
+            else if (randomInt <= 55) { adjustedDropCount = 2; }
+            else if (randomInt <= 75) { adjustedDropCount = 3; }
+            else { adjustedDropCount = 4; }
+        }
+        else { // game difficulty = hard
+            if (randomInt <= 10) { adjustedDropCount = 0; }
+            else if (randomInt <= 38) { adjustedDropCount = 1; }
+            else if (randomInt <= 61) { adjustedDropCount = 2; }
+            else if (randomInt <= 82) { adjustedDropCount = 3; }
+            else { adjustedDropCount = 4; }
+        }
 
         return adjustedDropCount;
     }

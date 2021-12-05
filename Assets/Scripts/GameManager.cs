@@ -5,21 +5,28 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Game")]
-    [Range(2,20)]
-    [SerializeField] int startingDrops = 10;
+    public enum Difficulty {
+        easy,
+        normal,
+        hard
+    }
 
     [Header("Assets")]
     [SerializeField] Shader newShaderSurface;
     [SerializeField] GameObject highlightPanel;
     [SerializeField] GameObject borderLinePrefab;
     [SerializeField] GameObject scoreBubblePrefab;
-    [SerializeField] LevelComplete levelCompleteScreen;
-    [SerializeField] GameOver gameOverScreen;
     [SerializeField] Scoring scoreBoard;
-    public Blob blobPrefab;
     [SerializeField] TextMeshProUGUI dropCountDisplay;
     [SerializeField] PulseGameObject dropCountDisplayUI;
+    [SerializeField] AudioClip sfxBonusDrop;
+    public Blob blobPrefab;
+
+    [Header("Screens")]
+    [SerializeField] StartScreen startScreen;
+    [SerializeField] LevelComplete levelCompleteScreen;
+    [SerializeField] GameOver gameOverScreen;
+    [SerializeField] PauseScreen pauseScreen;
 
     GameBoard gameBoard;
 
@@ -34,9 +41,11 @@ public class GameManager : MonoBehaviour
     private Vector3 defaultNewBucketDropLocation = new Vector3(68f,45f,0);
     private int gridSquareSize = 12;
     private System.Random rand = new System.Random();
-    [SerializeField] AudioClip sfxBonusDrop;
 
     private AudioManagerHighPriority bonusDropAudio;
+    
+    [HideInInspector]
+    public Difficulty gameDifficulty;
 
 
 
@@ -57,7 +66,7 @@ public class GameManager : MonoBehaviour
                     + ", Blobs Remaining: " + activeBlobCount.ToString());
             this.gameObject.layer = 2;
             EventManager.RaiseOnGameInactive();
-            gameOverScreen.DisplayGameOverScreen();
+            gameOverScreen.DisplayGameOverScreen(gameDifficulty);
         }
         else if (activeFlyingDropCount == 0 && activeBlobCount == 0) {
             Debug.Log("Drops In Bucket: " + dropsInBucket.ToString() 
@@ -99,10 +108,20 @@ public class GameManager : MonoBehaviour
         activeBlobCount++;
         CheckGridCleared();
     }
+
+    private void Start() {
+        startScreen.gameObject.SetActive(true);
+        pauseScreen.gameObject.SetActive(false);
+        gameOverScreen.gameObject.SetActive(false);
+        levelCompleteScreen.gameObject.SetActive(false);
+
+        Screen.fullScreen = !Screen.fullScreen;
+    }
     
     // Start is called before the first frame update
-    public void StartGame()
+    public void StartGame(Difficulty selectedDifficulty)
     {
+        gameDifficulty = selectedDifficulty;
         this.gameObject.layer = 0;
         ClearGameBoard();
 
@@ -112,7 +131,7 @@ public class GameManager : MonoBehaviour
         InitializeDropBucket();
         EventManager.RaiseOnGameActive();
         activeBlobCount = 0;
-        scoreBoard.Initialize();
+        scoreBoard.Initialize(gameDifficulty);
         UpdateDropCountDisplay();
         bonusDropAudio = GameObject.Find("AudioManagerHighPriority").GetComponent<AudioManagerHighPriority>();
     }
@@ -154,14 +173,31 @@ public class GameManager : MonoBehaviour
     }
 
     private void InitializeDropBucket() {
+        // destroy any existing drop bucket game objects
         if (dropBucket != null) {
             for (int i=0; i<dropBucket.Count; i++) {
                 Destroy(dropBucket[i].gameObject);
                 dropBucket[i] = null;
             }
         }
-        dropsInBucket = startingDrops;
-        FillDropBucket(startingDrops);
+
+        dropsInBucket = GetStartingDropCount();
+        FillDropBucket(dropsInBucket);
+    }
+
+    private int GetStartingDropCount() {
+        int dropCount;
+
+        if (gameDifficulty == Difficulty.easy) {
+            dropCount = 15;
+        }
+        else if (gameDifficulty == Difficulty.normal) {
+            dropCount = 10;
+        }
+        else {
+            dropCount = 7;
+        }
+        return dropCount;
     }
 
     private void LoadGameBoard(int boardSize)
@@ -170,7 +206,7 @@ public class GameManager : MonoBehaviour
 
         Vector3 topLeft = new Vector3(-gridWidth, gridWidth);
         Vector3 bottomRight = new Vector3(gridWidth, -gridWidth);
-        gameBoard = new GameBoard(boardSize, blobPrefab, borderLinePrefab, topLeft, bottomRight);
+        gameBoard = new GameBoard(boardSize, blobPrefab, borderLinePrefab, topLeft, bottomRight, gameDifficulty);
 
         float boardHeight = gameBoard.GetSquareHeight();
         float boardWidth = gameBoard.GetSquareWidth();
@@ -223,6 +259,17 @@ public class GameManager : MonoBehaviour
         else {
             panelDisplayTime -= (panelDisplayLength * 5 * Time.deltaTime);
         }
+
+        if (Input.GetKey(KeyCode.Escape)) {
+            Time.timeScale = 0;
+            this.gameObject.layer = 2;
+            pauseScreen.DisplayPauseScreen(gameDifficulty);
+        }
+    }
+
+    public void UnpauseGame() {
+        this.gameObject.layer = 0;
+        Time.timeScale = 1;
     }
 
     public GameObject GetBorderLinePrefab() {

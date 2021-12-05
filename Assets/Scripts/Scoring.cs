@@ -7,20 +7,35 @@ public class Scoring : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI scoreDisplay;
     [SerializeField] TextMeshProUGUI levelDisplay;
-    [SerializeField] int scoreIncrement = 10;
+    private int scoreIncrement;
     private int score = 0;
     private int comboCount = 0;
     private int maxCombo = 0;
     private int level;
     private bool isGameActive = false;
+    GameManager.Difficulty gameDifficulty;
 
-    public void Initialize() {
+    public void Initialize(GameManager.Difficulty difficulty) {
         score = 0;
         comboCount = 0;
         maxCombo = 0;
         level = 1;
         UpdateScoreDisplay();
         UpdateLevelDisplay();
+        gameDifficulty = difficulty;
+        SetScoreIncrement();
+    }
+
+    private void SetScoreIncrement() {
+        if (gameDifficulty == GameManager.Difficulty.easy) {
+            scoreIncrement = 7;
+        }
+        else if (gameDifficulty == GameManager.Difficulty.easy) {
+            scoreIncrement = 10;
+        }
+        else { // game difficulty hard
+            scoreIncrement = 15;
+        }
     }
 
     private void OnEnable() {
