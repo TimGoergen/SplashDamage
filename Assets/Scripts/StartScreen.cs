@@ -18,10 +18,6 @@ public class StartScreen : MonoBehaviour
     
     private GameManager.Difficulty selectedDifficulty = GameManager.Difficulty.normal;
 
-    private void Awake() {
-        this.gameObject.SetActive(true);
-    }
-
     public void OnQuitButtonClick() {
         Application.Quit();
     }

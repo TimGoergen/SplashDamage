@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     private int activeFlyingDropCount = 0;
     private int activeBlobCount = 0;
-    private Vector3 defaultNewBucketDropLocation = new Vector3(68f,45f,0);
+    private Vector3 defaultNewBucketDropLocation = new Vector3(62f,45f,0);
     private int gridSquareSize = 12;
     private System.Random rand = new System.Random();
 
